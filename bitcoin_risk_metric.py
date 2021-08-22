@@ -53,7 +53,7 @@ def calculateRisk(baseline):
     x = 0
 
     for i in baseline:
-        if i != None and i != 0:
+        if i != None and i != 0 and x > 930:
             risk.append(price[x]/i)
         else:
             risk.append(0)
@@ -76,17 +76,23 @@ baseline = movingAverage(350, price)
 
 risk = calculateRisk(baseline)
 
-adjustedRisk = deminishReturns(risk)
+#adjustedRisk = deminishReturns(risk)
 
-nomRisk = normalise(adjustedRisk)
+nomRisk = normalise(risk)
 
 x = range(len(price))
 
 fig, ax = plt.subplots(figsize = (10, 5))
 ax2 = ax.twinx()
+ax3 = ax.twinx()
 ax.plot(x, price, color = 'g')
 ax.set_yscale("log")
 ax2.plot(x, nomRisk, color = 'b')
-#ax2.set_yscale("log")
+ax.set_ylim(0.01,100000)
+ax3.set_ylim(0,1)
+ax2.axes.yaxis.set_visible(False)
+ax3.set_yticks([x * 0.1 for x in range(0, 11)])
+#ax2.set_ylim(0.027,1)
+ax2.set_yscale("log")
 #ax.plot(baseline)
 plt.show()
