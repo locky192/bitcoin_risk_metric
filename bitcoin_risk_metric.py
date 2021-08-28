@@ -22,6 +22,51 @@ def movingAverage(days, price_list):
     price_list.reverse()
     return maList
 
+def calculateRisk(baseline, price):
+    risk = []
+    x = 0
+
+    for i in baseline:
+        if i != None and i != 0 and x > 350:
+            risk.append((price[x]/i))
+        else:
+            risk.append(None)
+        x = x + 1
+    return risk
+
+def BenChart1():
+    price_raw = quandl.get("BCHAIN/MKPRU", authtoken="dRsdc8njMS4QHeKqoJy-").values.tolist()
+    price = []
+
+    for i in price_raw:
+        if i[0] != 0.0:
+            price.append(i[0])
+
+    baseline = movingAverage(350, price)
+    risk = calculateRisk(baseline, price)
+
+    x = range(len(price))
+
+    fig, ax = plt.subplots(figsize = (10, 5))
+    ax2 = ax.twinx()
+    ax3 = ax.twinx()
+    ax.plot(x, price, color = 'b')
+    ax.set_yscale("log")
+    ax2.plot(range(len(risk)), risk, color = 'orange')
+    ax.set_ylim(0.01,100000)
+    ax.set_xlim(0,len(price))
+    ax3.set_ylim(0,1)
+    ax2.axes.yaxis.set_visible(False)
+    ax3.set_yticks([x * 0.1 for x in range(0, 11)])
+    ax2.set_yscale("log")
+    ax.set_ylabel('BTC Price ($)')
+    ax3.set_ylabel('Risk')
+    ax.set_title('Ben Chart 1')
+    plt.grid()
+    plt.show()
+
+BenChart1()
+
 ##def deminishReturns(risk_list):
 ##    adjRiskList = []
 ##    x = 1
@@ -35,17 +80,27 @@ def movingAverage(days, price_list):
 ##        
 ##    return adjRiskList
 
-def calculateRisk(baseline):
-    risk = []
-    x = 0
+    ##ax2.plot(range(0,1426), risk0, color = 'y')
+    ##ax2.plot(range(1427,2746), risk[1427:2746], color = 'b')
+    ##ax2.plot(range(2747,4148), risk2, color = 'r')
 
-    for i in baseline:
-        if i != None and i != 0 and x > 930:
-            risk.append((price[x]/i))
-        else:
-            risk.append(None)
-        x = x + 1
-    return risk
+##def multiply(data,multiplier):
+##    mList = []
+##    for i in data:
+##        if i != None:
+##            mList.append(i*multiplier)
+##        else:
+##            mList.append(None)
+##    return mList
+##
+##def sub(data,subN):
+##    sList = []
+##    for i in data:
+##        if i != None:
+##            sList.append(i-subN)
+##        else:
+##            sList.append(None)
+##    return sList
 
 ##def normalise(data):
 ##    nomData = []
@@ -65,32 +120,8 @@ def calculateRisk(baseline):
 ##        
 ##    return nomData2
 
-## Retrieve Price Data
-price_raw = quandl.get("BCHAIN/MKPRU", authtoken="dRsdc8njMS4QHeKqoJy-").values.tolist()
-price = []
 
-for i in price_raw:
-    price.append(i[0])
 
-baseline = movingAverage(350, price)
-
-risk = calculateRisk(baseline)
-
-x = range(len(price))
-
-fig, ax = plt.subplots(figsize = (10, 5))
-ax2 = ax.twinx()
-ax3 = ax.twinx()
-ax.plot(x, price, color = 'g')
-ax.set_yscale("log")
-#ax2.plot(range(len(risk)), risk, color = 'b')
-ax2.plot(range(0,1426), risk[0:1426], color = 'y')
-ax2.plot(range(1427,2746), risk[1427:2746], color = 'b')
-ax2.plot(range(2747,4148), risk[2747:4148], color = 'r')
-ax.set_ylim(0.01,100000)
-ax3.set_ylim(0,1)
-ax2.axes.yaxis.set_visible(False)
-ax3.set_yticks([x * 0.1 for x in range(0, 11)])
-ax2.set_yscale("log")
-plt.grid()
-plt.show()
+##risk2 = multiply(risk[2747:4148], 1)
+##risk0 = sub(risk[0:1426], 0)
+    
